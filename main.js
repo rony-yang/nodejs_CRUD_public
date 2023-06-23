@@ -338,7 +338,11 @@ app.post('/customer_detail', async (req, res) => {
 								 FROM YSY.customerInfo 
 								 WHERE No = '${check_No}'
 								`);
-    res.send(rows);
+    if (rows.affectedRows != 0 && rows.errno == undefined) {
+	  res.send(rows);
+	} else {
+	  res.send('fail');
+	}
 });
 
 // 신규등록
@@ -440,9 +444,22 @@ app.post("/customer_modify", async (req, res) => {
 	}
 });
 
-
-
-
+// 체크항목 다중 삭제하기
+app.post('/customer_delete', async (req, res) => {
+	let check_No = JSON.parse(req.body.No);
+	let rows = await asyncQuery(`DELETE FROM YSY.customerInfo
+								 WHERE No 
+								 IN (${check_No.map(value => `'${value}'`).join(',')})
+								`);
+	
+	if (rows.affectedRows != 0 && rows.errno == undefined) {
+	  res.send('ok');
+	  console.log("거래처 정보 삭제완료");
+	} else {
+	  res.send('fail');
+	  console.log("거래처 정보 삭제 실패");
+	}
+});
 
 
 /////////////////////////////////// 7. customerInfo.ejs 사용 종료 ///////////////////////////////////
