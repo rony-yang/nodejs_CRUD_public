@@ -341,5 +341,67 @@ app.post('/customer_detail', async (req, res) => {
     res.send(rows);
 });
 
+// 신규등록
+app.post('/customer_add', async (req, res) => {
+	let registrationNum 			= req.body.registrationNum;
+	let name 						= req.body.name;
+	let representative				= req.body.representative;
+	let date						= req.body.date;
+	let corporateRegistrationNum 	= req.body.corporateRegistrationNum;
+	let location					= req.body.location;
+	let locationOfHeadOffice		= req.body.locationOfHeadOffice;
+	let typeOfBusiness				= req.body.typeOfBusiness;
+	let item						= req.body.item;
+	let email						= req.body.email;
+	let callNum						= req.body.callNum;
+	let personInCharge				= req.body.personInCharge;
+	let memo						= req.body.memo;
+
+    let rows = await asyncQuery(`INSERT INTO YSY.customerInfo 
+									(
+									 registrationNum, 
+									 name,
+									 representative,
+									 date,
+									 corporateRegistrationNum,
+									 location,
+									 locationOfHeadOffice,
+									 typeOfBusiness,
+									 item,
+									 email,
+									 callNum,
+									 personInCharge,
+									 memo
+									 )
+								VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,[
+									 registrationNum, 
+									 name,
+									 representative,
+									 date,
+									 corporateRegistrationNum,
+									 location,
+									 locationOfHeadOffice,
+									 typeOfBusiness,
+									 item,
+									 email,
+									 callNum,
+									 personInCharge,
+									 memo
+								]);
+	if (rows.affectedRows != 0 && rows.errno == undefined) {
+	  res.send('ok');
+	  console.log("거래처 정보 등록완료");
+	} else {
+	  res.send('fail');
+	  console.log("거래처 정보 등록 실패");
+	}
+});
+
+
+
+
+
+
+
 
 /////////////////////////////////// 7. customerInfo.ejs 사용 종료 ///////////////////////////////////
