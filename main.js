@@ -397,7 +397,48 @@ app.post('/customer_add', async (req, res) => {
 	}
 });
 
-
+// 거래처정보 수정하기
+app.post("/customer_modify", async (req, res) => {
+	let registrationNum 			= req.body.registrationNum;
+	let name 						= req.body.name;
+	let representative				= req.body.representative;
+	let date						= req.body.date;
+	let corporateRegistrationNum 	= req.body.corporateRegistrationNum;
+	let location					= req.body.location;
+	let locationOfHeadOffice		= req.body.locationOfHeadOffice;
+	let typeOfBusiness				= req.body.typeOfBusiness;
+	let item						= req.body.item;
+	let email						= req.body.email;
+	let callNum						= req.body.callNum;
+	let personInCharge				= req.body.personInCharge;
+	let memo						= req.body.memo;
+	let No							= req.body.No;
+	console.log(No);
+	let rows = await asyncQuery(`UPDATE YSY.customerInfo 
+								SET registrationNum = '${registrationNum}',
+									name = '${name}',
+									representative = '${representative}',
+									date = '${date}',
+									corporateRegistrationNum = '${corporateRegistrationNum}',
+									location = '${location}',
+									locationOfHeadOffice = '${locationOfHeadOffice}',
+									typeOfBusiness = '${typeOfBusiness}',
+									item = '${item}',
+									email = '${email}',
+									callNum = '${callNum}',
+									personInCharge = '${personInCharge}',
+									memo = '${memo}'
+									WHERE no ='${No}'
+								`);
+	
+	if (rows.affectedRows != 0 && rows.errno == undefined) {
+	  res.send('ok');
+	  console.log("거래처 정보 수정완료");
+	} else {
+	  res.send('fail');
+	  console.log("거래처 정보 수정 실패");
+	}
+});
 
 
 
