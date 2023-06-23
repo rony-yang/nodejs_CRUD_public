@@ -5,7 +5,7 @@
 		<title>거래처 정보</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<!-- <link rel="stylesheet" href="css/main.css" /> -->
+		<link rel="stylesheet" href="css/main.css" />
 		<script src="js/main_contents.js"></script>
 		
 		<!-- 부트스트랩 사용 JavaScript 와 CSS -->
@@ -148,6 +148,17 @@
 		.input-style[readonly] {
 			background-color: #FFF;
 		}
+
+		/* main.css에서 가져오는 체크박스 모양 없애기 */
+		table.dataTable tbody td.select-checkbox:before,
+		table.dataTable tbody th.select-checkbox:before {
+		  content: none;
+		  margin-top: 0;
+		  margin-left: 0;
+		  border: none;
+		  border-radius: 0;
+		}
+
 
 		</style>
 		
@@ -464,10 +475,10 @@
 					scrollX			: true, 			// 가로스크롤
 					columnDefs		: [{ targets: '_all', className: "text-center" }],
 					columns 		: [
-										{title: '<input type="checkbox" id="select_all_checkbox">',
+										{title: '<div style="text-align: center;"><input type="checkbox" id="select_all_checkbox"></div>',
 										 data: null,
 										 render: function(data, type, full, meta) {
-											return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data.No).html() + '">';
+											return '<div style="text-align: center;"><input type="checkbox" name="id[]" value="' + $('<div/>').text(data.No).html() + '"></div>';
 										 },
 										 orderable: false,
 										 className: 'select-checkbox'
