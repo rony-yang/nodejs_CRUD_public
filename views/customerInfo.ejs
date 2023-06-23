@@ -175,21 +175,19 @@
 
 								<body>
 									<div class="dataTable_body">
-										<table id="customerInfo_dataTable" style="width:100%">
-												
-											
-											
+										<table id="customerInfo_dataTable" style="width:100%">	
 										</table>	
 		
 									</div>
 									<div style="margin-bottom: 30px;">
-										<a class="button warning" onclick="dataTable_detail()"  data-bs-toggle="modal" data-bs-target="#detailModal">상세정보</a>
+										<!-- <a class="button warning" onclick="dataTable_detail()"  data-bs-toggle="modal" data-bs-target="#detailModal">상세정보</a> -->
+										<a class="button warning" onclick="dataTable_detail()">상세정보</a>
 										<a class="button primary" onclick="dataTable_add()" 	data-toggle="modal" data-target="#addModal">등록</a>
 										<a class="button success" onclick="dataTable_modify()"	data-toggle="modal" data-target="#modifyModal">수정</a>
 										<a class="button danger"  onclick="dataTable_delete()">삭제</a>
 									</div>
 									
-									<p id="data_validation" class="register_validation_result"></p>
+									<p id="data_validation" class="register_validation_result" style="margin-bottom: 20px;"></p>
 									
 								</body>
 
@@ -242,7 +240,8 @@
 								<th>업태</th>
 								<th><input type="text" class="form-control input-style" id="detail_typeOfBusiness" readonly></th>
 								<th style="margin-left: 20px;">종목</th>
-								<th><input type="text" class="form-control input-style" id="detail_item" readonly></th>
+								<!-- <th><input type="text" class="form-control input-style" id="detail_item" readonly></th> -->
+								<th><textarea class="form-control input-style" id="detail_item" readonly></textarea></th>
 							</tr>
 							<tr>
 								<th>전자우편</th>
@@ -313,7 +312,7 @@
 					responsive		: true, 			// 반응형 설정
 					lengthMenu		: [ 1, 3, 5, 10 ], 	// 표시 건수 단위
 					displayLength	: 1, 				// 표시 건수 설정
-					stateSave		: true, 			// 현재 상태 보존
+					// stateSave		: true, 			// 현재 상태 보존
 					scrollX			: true, 			// 가로스크롤
 					columnDefs		: [{ targets: '_all', className: "text-center" }],
 					columns 		: [
@@ -380,7 +379,7 @@
 		if (check_value.length === 0) {
 			view_txt_message("data_validation", "거래처명을 먼저 선택해주세요.", "red");
 		} else if(check_value.length > 1) {
-			view_txt_message("data_validation", "한번에 1개의 정보만 선택 가능합니다.", "red");
+			view_txt_message("data_validation", "한번에 1개의 거래처만 선택 가능합니다.", "red");
 		} else {
 			view_txt_message("data_validation", "", "red");
 			let submit_args = '';
@@ -401,6 +400,8 @@
 			$('#detail_callNum').val(data.callNum);
 			$('#detail_personInCharge').val(data.personInCharge);
 			$('#detail_memo').val(data.memo);
+			
+			$('#detailModal').modal('show');
 		}
 	}		
 		
