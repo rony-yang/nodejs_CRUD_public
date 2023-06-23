@@ -1,0 +1,227 @@
+<style>
+
+@font-face {
+	font-family: 'SUITE-Regular';
+	src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+}
+
+#nav {
+  font-family: 'SUITE-Regular', Arial, sans-serif;
+}
+	
+/* Nav */
+
+#nav {
+	-moz-transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
+	-webkit-transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
+	-ms-transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
+	transition: background-color 0.2s ease, border-top-left-radius 0.2s ease, border-top-right-radius 0.2s ease, padding 0.2s ease;
+	background-color: transparent;
+	color: #636363;
+	position: absolute;
+	width: 64em;
+	max-width: calc(100% - 4em);
+	padding: 1em;
+	background-color: transparent;
+	border-top-left-radius: 0.25em;
+	border-top-right-radius: 0.25em;
+	cursor: default;
+	text-align: center;
+	width: 100%;
+}
+	/* 하이퍼링크 글자 밑줄 없애기 */
+	#nav a {
+		text-decoration: none;
+	}
+	
+	#nav input, #nav select, #nav textarea {
+		color: #636363;
+	}
+
+	#nav a:hover {
+		color: #636363;
+	}
+
+	#nav strong, #nav b {
+		color: #636363;
+	}
+
+	#nav h1, #nav h2, #nav h3, #nav h4, #nav h5, #nav h6 {
+		color: #636363;
+	}
+
+	#nav blockquote {
+		border-left-color: #dddddd;
+	}
+
+	#nav code {
+		background: rgba(222, 222, 222, 0.25);
+		border-color: #dddddd;
+	}
+
+	#nav hr {
+		border-bottom-color: #dddddd;
+	}
+
+	#nav + #main {
+		padding-top: 4.25em;
+	}
+
+	#nav ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+		#nav ul li {
+			-moz-transition: margin 0.2s ease;
+			-webkit-transition: margin 0.2s ease;
+			-ms-transition: margin 0.2s ease;
+			transition: margin 0.2s ease;
+			display: inline-block;
+			margin: 0 0.35em;
+			padding: 0;
+			vertical-align: middle;
+		}
+
+			#nav ul li a {
+				-moz-transition: font-size 0.2s ease;
+				-webkit-transition: font-size 0.2s ease;
+				-ms-transition: font-size 0.2s ease;
+				transition: font-size 0.2s ease;
+				display: inline-block;
+				height: 2.25em;
+				line-height: 2.25em;
+				padding: 0 1.25em;
+				border: 0;
+				border-radius: 8px;
+				box-shadow: inset 0 0 0 1px transparent;
+			}
+
+				#nav ul li a:hover {
+					/* background-color: rgba(222, 222, 222, 0.25); */
+					background-color: transparent;
+				}
+
+				#nav ul li a.active {
+					background-color: transparent;
+					box-shadow: none;
+					font-size: 1.5em;
+					font-weight: bold;
+					color: #400080;
+					
+				}
+
+	#nav.alt {
+		position: fixed;
+		top: 0;
+		padding: 0.5em 1em;
+		background-color: rgba(247, 247, 247, 0.95);
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		z-index: 10000;
+	}
+
+		#nav.alt ul li {
+			margin: 0 0.175em;
+		}
+
+			#nav.alt ul li a {
+				font-size: 0.9em;
+			}
+
+	@media screen and (max-width: 736px) {
+
+		#nav {
+			display: none;
+		}
+
+			#nav + #main {
+				padding-top: 0;
+			}
+
+	}
+
+	.nav_link {
+		color: #fff;
+		transition: color 0.2s ease;
+	}
+	
+	.nav_link:hover {
+		color: #fff;
+	}
+	
+	#nav ul li a.nav_link:hover {
+	  color: #400080;
+	}
+	
+	.login_alarm {
+		color: #fff;  
+		text-align: right;	
+	}
+	
+	#nav p a.logout_text {
+	  color: #fff;
+	}
+	
+	#nav p a.logout_text:hover {
+	  color: #400080;
+	}
+	
+</style>
+
+
+<!-- Nav -->
+<nav id="nav">
+	<ul>
+		<li><a href="/" class="nav_link">로그인</a></li>
+		<li><a href="/register" class="nav_link">회원가입</a></li>
+		<li><a href="/summarySheet" class="nav_link">집계표</a></li>
+		<li><a href="/customerInfo" class="nav_link">거래처 정보</a></li>
+	</ul>
+	
+	<% if (typeof sessionID !== 'undefined' && sessionID !== '') { %>
+		<p class="login_alarm">
+		  <span style="font-size: 1.3em;"><%= sessionID %></span>&nbsp;님 로그인 중입니다.&emsp;
+		  <a class="logout_text" onclick="logout_action()">Logout</a>
+		</p>
+	<% } else { %>
+		<p class="login_alarm">로그인 정보가 없습니다.</p>
+	<% } %>
+
+</nav>
+
+<script>
+	let sessionID = sessionStorage.getItem('sessionID');
+	
+	let currentURL = window.location.pathname;
+	let nav_links = document.querySelectorAll('#nav .nav_link');
+	
+	nav_links.forEach(function(link) {
+		if (link.getAttribute('href') === currentURL) {
+			link.classList.add('active');
+		} else {
+			link.classList.remove('active');
+		}
+	});
+	
+	// 로그아웃 처리
+	function logout_action() {
+		let submit_args = commonFunc.makeArgs("sessionID", sessionID);
+        let result = commonFunc.postArgs("/logoutaction", submit_args);
+
+        if (result == "ok") {
+			sessionStorage.removeItem("sessionID");
+            location.href = "/";
+        } else {
+			alert('로그아웃 실패');
+		}	
+	}	
+
+</script>
+
+
+
+

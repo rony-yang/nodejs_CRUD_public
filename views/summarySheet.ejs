@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>집계표</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="css/main.css" />
+		<script src="js/main_contents.js"></script>
+		
+		<style>
+		@font-face {
+			font-family: 'SUITE-Regular';
+			src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+			font-weight: 400;
+			font-style: normal;
+		}
+
+		h1, h2, h3, h4, h5, h6 {
+			font-family: 'SUITE-Regular', Arial, sans-serif;
+		}
+
+		body {
+			font-family: 'SUITE-Regular', Arial, sans-serif;
+		}
+
+		.register_head_style {
+			font-weight: bold;
+		}	
+		/* 테이블 행 높이	 */
+		table td {
+			padding: 0.5em 0.75em;
+		}	
+		
+		.table_head_style {
+			font-size: 1.3em;
+		}	
+
+		/* 테이블 기본 가운데정렬	 */
+		#summarySheet {
+			text-align: center;
+		}
+
+		/* 테이블 기본 가운데정렬	 */	
+		#summarySheet th,
+		#summarySheet td {
+			text-align: center;
+		}
+		
+		/* 금액 오른쪽정렬 */
+		#summarySheet .align_right {
+			text-align: right; 
+			padding-right: 130px;
+		}
+		
+		/* 기본색상 : 회색 */
+		#main table tbody tr {
+			border-color: #dddddd;
+		}	
+			
+		/* 기본색상 : 회색 / 합계부분만 색상 다르게하기 */
+		#main table tbody tr:nth-child(2n + 1):not(.row_sum) {
+			background-color: rgba(222, 222, 222, 0.25);
+		}	
+			
+		/* 합계부분 연한보라색 배경색으로	 */
+		#summarySheet tr.row_sum,
+		#main table tbody tr.row_sum {
+			background-color: #cdb1cb;
+		}
+	
+		/* 전체합계부분 진한 보라색 배경색으로 */
+		#summarySheet tr.row_total_sum td {
+			color: #fff; 
+			background-color: #5f4d93;	
+		}
+			
+		
+		</style>
+		
+		<%-include('common/headnavbar.ejs')%>
+		
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<hr>
+						<h1 class="register_head_style">집계표</h1>
+						<br>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Get Started -->
+							<section id="cta" class="main special">
+								
+								<header class="major">
+									<h3 class="register_head_style">매출 현황</h3>
+								</header>
+								
+								<body>
+									
+									<table id="summarySheet">
+	
+									<!-- 제목 줄 -->
+									<thead width="100%">
+										<tr class="table_head_style">
+											<th width="20%">일련번호</th>
+											<th width="40%">날짜</th>
+											<th width="40%">금액</th>
+										</tr>
+									</thead>	
+									
+									<!-- 내용 -->
+									<tbody>
+										<%
+										function number_format(inputNumber) {
+											return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+										}
+
+										let current_month = ''; // 현재 월
+										let monthly_total_index = 0; // 월별 총계 인덱스
+										let total_sum = 0; 
+										let counter = 1; // 일련번호
+										
+										for (let index = 0; index < rows.length; index++) {
+											let row = rows[index];
+											let row_date = new Date(row.date);
+											let row_month = row_date.toLocaleString('default', { month: 'short' }); // 날짜를 월 이름으로 포맷
+
+											// 새로운 월이 시작되었는지 확인
+											if (row_month !== current_month) {
+												if (current_month !== '') {
+												  %>
+												  <tr class="row_sum">
+													<td></td>
+													<td><%= current_month %> 합계</td>
+													<td class="align_right"><%= number_format(monthly_total[monthly_total_index].total) %></td>
+												  </tr>
+												  <% monthly_total_index++;
+												}
+												current_month = row_month;
+											}
+											%>
+											<tr>
+											<td><%= counter %></td>
+											<td><%= row_date.toLocaleDateString() %></td>
+											<td class="align_right"><%= number_format(row.money) %></td>
+											</tr>
+											<%
+											total_sum += row.money;
+											counter++;
+										} // --for
+										
+										// 마지막 월의 총계 출력
+										if (current_month !== '' && monthly_total_index < monthly_total.length) { %>
+										<tr class="row_sum">
+											<td></td>
+											<td><%= current_month %> 합계</td>
+											<td class="align_right"><%= number_format(monthly_total[monthly_total_index].total) %></td>
+										</tr>
+										<% monthly_total_index++;
+											}
+										%>
+										
+										<tr class="row_total_sum">
+										  <td></td>
+										  <td>전체 합계</td>
+										  <td class="align_right"><%= number_format(total_sum) %></td>
+										</tr>
+										</tbody>
+									</table>
+								
+								</body>
+
+							</section>
+					</div>
+
+			<%-include('common/footer.ejs')%>
+
+			</div>
+		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+	</body>
+</html>

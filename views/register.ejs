@@ -1,0 +1,616 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>회원가입</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="css/main.css" />
+		<script src="js/main_contents.js"></script>
+		
+		<style>
+			
+		@font-face {
+			font-family: 'SUITE-Regular';
+			src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+			font-weight: 400;
+			font-style: normal;
+		}
+
+		h1, h2, h3, h4, h5, h6 {
+			font-family: 'SUITE-Regular', Arial, sans-serif;
+		}
+
+		body {
+			font-family: 'SUITE-Regular', Arial, sans-serif;
+		}	
+			
+		.register_head_style {
+			font-weight: bold;
+		}	
+			
+		.register_form_style {
+			display: inline-flex;
+			align-items: baseline;
+			width: 100%;
+			position: relative;
+			text-align: center;
+			margin-bottom: 3rem;
+		}
+			
+		.register_name_style {
+			font-size: 1.3rem;
+			color: #636363;
+			font-weight: bold;
+			width: 20%;
+		}
+
+		.register_input_style {
+			width: 80%;
+			display: inline-block;
+		}
+			
+		.register_validation_result {
+			text-align: center;
+			color: #ff0000;
+			/* font-weight: bold; */
+			/* margin-top: 0.8rem; */
+			margin-bottom: -2.5rem;
+		}
+			
+		.register_to_oneline {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+		}		
+			
+			#main input[type="text"],
+			#main input[type="password"],
+			#main input[type="email"],
+			#main input[type="date"],
+			#main select {
+				background-color: rgba(222, 222, 222, 0.25);
+				border-color: #dddddd;
+			}
+			
+			#main input[type="submit"].danger,
+			#main input[type="reset"].danger,
+			#main input[type="button"].danger,
+			#main button.danger,
+			#main .button.danger {
+			background-color: #ff6666;
+			color: #ffffff !important;
+			box-shadow: none;
+			}
+			
+			#main input[type="submit"].danger:hover,
+			#main input[type="reset"].danger:hover,
+			#main input[type="button"].danger:hover,
+			#main button.danger:hover,
+			#main .button.danger:hover {
+			background-color: #ff8080;
+			}
+			
+			#main input[type="submit"].primary,
+			#main input[type="reset"].primary,
+			#main input[type="button"].primary,
+			#main button.primary,
+			#main .button.primary {
+				background-color: #6666ff;
+				color: #ffffff !important;
+				box-shadow: none;
+			}
+			
+			#main input[type="submit"].primary:hover,
+			#main input[type="reset"].primary:hover,
+			#main input[type="button"].primary:hover,
+			#main button.primary:hover,
+			#main .button.primary:hover {
+				background-color: #8080ff;
+			}
+			
+			#main input[type="submit"].secondary,
+			#main input[type="reset"].secondary,
+			#main input[type="button"].secondary,
+			#main button.secondary,
+			#main .button.secondary {
+				background-color: #999999;
+				color: #ffffff !important;
+				box-shadow: none;
+			}
+			
+			#main input[type="submit"].secondary:hover,
+			#main input[type="reset"].secondary:hover,
+			#main input[type="button"].secondary:hover,
+			#main button.secondary:hover,
+			#main .button.secondary:hover {
+				background-color: #a6a6a6;
+			}
+
+		.red_text {
+			color: #ff0000;
+			text-align: center;
+			display: block;
+			/* font-weight: bold; */
+		}
+			
+		.blue_text {
+			color: #435ebe;
+			text-align: center;
+			/* font-weight: bold; */
+		}
+
+		</style>
+		
+		<%-include('common/headnavbar.ejs')%>
+		
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		
+	</head>
+	<body class="is-preload">
+		
+		<!-- Wrapper -->
+			<div id="wrapper">
+			
+				<!-- Header -->
+					<header id="header">
+						<hr>
+						<h1 class="register_head_style">회원가입</h1>
+						<br>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Get Started -->
+							<section class="main special">
+								
+								<header class="major">
+									<h3 class="register_head_style">가입 정보를 입력해 주세요.</h3>
+								</header>
+								
+								<body>
+									
+									<div class="register_form_style">
+										<div class="register_name_style">
+											아이디
+										</div>
+										<div class="register_input_style" style="width: 60%;">
+											<input type="text" id="userID" class="form-control form-control-xl" placeholder="영어 소문자, 숫자만 10글자까지 입력 가능합니다.">
+											<p id="userID_result" class="register_validation_result"></p> 
+										</div>
+										<div style="width: 10%; margin-left: 2%;">
+											<a class="button primary" onclick="userID_duplicate_check()">중복확인</a>
+										</div>
+									</div>
+
+									<div class="register_form_style">
+										<div class="register_name_style">
+											비밀번호
+										</div>
+										<div class="register_input_style">
+											<input type="password" id="password" class="form-control form-control-xl" placeholder="영어, 숫자, 특수문자를 모두 사용하여 8~16자리로 입력해 주세요.">
+											<p id="password_result" class="register_validation_result"></p> 
+										</div>
+									</div>
+									
+									<div class="register_form_style">
+										<div class="register_name_style">
+											비밀번호 확인
+										</div>
+										<div class="register_input_style">
+											<input type="password" id="password_check" class="form-control form-control-xl" placeholder="비밀번호를 한번 더 입력해주세요.">
+											<p id="password_check_result" class="register_validation_result"></p> 
+										</div>
+									</div>
+									
+									<div class="register_form_style">
+										<div class="register_name_style">
+											이름
+										</div>
+										<div class="register_input_style">
+											<input type="text" id="name" class="form-control form-control-xl" placeholder="한글로 5자 이내 작성해주세요.">
+											<p id="name_result" class="register_validation_result"></p>
+										</div>
+                    				</div>
+									
+									<div class="register_form_style">
+										<div class="register_name_style">
+											생년월일
+										</div>
+										<div class="register_input_style">
+											<input type="date" id="birth" class="form-control form-control-xl">
+											<p id="birth_result" class="register_validation_result"></p> 
+										</div>
+                   					</div>
+									
+									<div class="register_form_style">
+										<div class="register_name_style">
+											주소
+										</div>
+										<div class="register_input_style">
+											<div class="register_to_oneline">
+												<input id="member_post"  type="text" placeholder="우편번호" readonly onclick="find_address()" style="width: 30%; margin-right: 10px; margin-bottom: 10px;">
+												<input id="member_addr" type="text" placeholder="주소" style="margin-bottom: 10px;" readonly> <br>
+												<!-- <input type="text" id="address" class="form-control form-control-xl" placeholder="시, 군, 구를 포함한 주소를 적어주세요."> -->
+											</div>	
+											<input type="text" id="member_detail_addr" placeholder="상세한 주소를 적어주세요.">
+											<p id="address_result" class="register_validation_result"></p> 
+										</div>
+                    				</div>
+									
+									<div class="register_form_style" style="margin-top: 30px;">
+										<div class="register_name_style">
+											전화번호
+										</div>
+										<div class="register_input_style">
+											<div class="register_to_oneline">
+												<select id="number_1" style="text-align: center;">
+													<option value="010" selected>010</option>
+													<option value="011">011</option> 
+												</select>
+												<span style="margin: 0 10px;">-</span>
+												<input type="text" id="number_2" style="text-align: center;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" / maxlength="4"> 
+												<span style="margin: 0 10px;">-</span>
+												<input type="text" id="number_3" style="text-align: center;" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" / maxlength="4">
+											</div>
+											<p id="phone_number_result" class="register_validation_result"></p> 
+										</div>
+                    				</div>
+									
+									<div class="register_form_style">
+										<div class="register_name_style">
+											이메일
+										</div>
+										<div class="register_input_style">
+											<div class="register_to_oneline">
+												<input type="text" id="email" class="form-control form-control-xl" placeholder="이메일 주소를 적어주세요.">
+												<span style="margin: 0 10px;">@</span>
+												<select id="email_domain" style="text-align: center;">
+													<option value="no_selected" disabled selected>선택해주세요.</option>
+													<option value="naver.com">naver.com</option> 
+													<option value="hanmail.net">hanmail.net</option>
+													<option value="daum.net">daum.net</option>
+													<option value="gmail.com">gmail.com</option>
+													<option value="nate.com">nate.com</option>
+													<option value="">직접 입력</option>
+												</select>
+											</div>
+											<div id="direct_input_box" style="display: none;">
+												<input type="text" id="direct_input_email" placeholder="도메인을 직접 입력해주세요." style="margin-top: 10px;">
+											</div>
+
+												<p id="email_result" class="register_validation_result"></p> 
+										</div>
+                    				</div>
+									<p id="register_result" class="register_validation_result"></p> 
+									
+								</body>
+								
+								<footer class="major">									
+									<a class="button primary" onclick="btn_register()">회원가입</a>
+									<a class="button danger" onclick="btn_reset()">초기화</a>
+									<a class="button secondary">닫기</a>	
+									<p id="blank_check_validation" style="display: none;"></p> 
+									<p style="font-weight: bold; margin-top: 25px;">계정이 이미 있으신가요? <a href="/" style="text-decoration: none;">로그인 하기</a></p>
+								</footer>
+								
+							</section>
+					</div>
+
+			<%-include('common/footer.ejs')%>
+
+			</div>
+		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+		<!-- 주소 API 사용 -->
+		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+		<script>
+
+	// 페이지 로딩하면 아이디로 포커스 이동
+	$(document).ready(function() {
+		$("#userID").focus();
+	});		
+			
+	// 유효성검사 메세지 출력
+	function view_txt_message(elementId, message, color) {
+		var element = document.getElementById(elementId);
+			element.innerText = message;
+
+		if (color === "red") {
+				element.classList.remove("blue_text");	
+				element.classList.add("red_text");
+			} else if (color === "blue") {
+				element.classList.remove("red_text");
+				element.classList.add("blue_text");
+			}
+	}	
+			
+	// 공백여부 검사해서 에러메세지 출력하고 포커스 이동하기
+	function blank_check(fieldId, message) {
+		view_txt_message("register_result", message, "red");
+		$(fieldId).focus();
+	}
+			
+	// 초기화 버튼		
+	function btn_reset() {
+		// 사용자 입력 부분 초기화
+		document.getElementById("userID").value = "";
+		document.getElementById("password").value = "";
+		document.getElementById("password_check").value = "";
+		document.getElementById("name").value = "";
+		document.getElementById("birth").value = "";
+		document.getElementById("member_post").value = "";
+		document.getElementById("member_addr").value = "";
+		document.getElementById("member_detail_addr").value = "";
+		document.getElementById("number_1").selectedIndex = 0;
+		document.getElementById("number_2").value = "";
+		document.getElementById("number_3").value = "";
+		document.getElementById("email").value = "";
+		document.getElementById("email_domain").selectedIndex = 0;
+		document.getElementById("direct_input_email").value = "";
+		
+		// 에러메세지 부분 초기화
+		document.getElementById("userID_result").innerHTML = "";
+		document.getElementById("password_result").innerHTML = "";
+		document.getElementById("password_check_result").innerHTML = "";
+		document.getElementById("name_result").innerHTML = "";
+		document.getElementById("birth_result").innerHTML = "";
+		document.getElementById("address_result").innerHTML = "";
+		document.getElementById("phone_number_result").innerHTML = "";
+		document.getElementById("email_result").innerHTML = "";
+		document.getElementById("register_result").innerHTML = "";		
+		
+		// 이메일 도메인 직접 입력 부분 숨기기
+		document.getElementById("direct_input_box").style.display = "none";	
+		
+		// 공백 확인 초기화
+		document.getElementById("blank_check_validation").value = "";
+	}		
+
+	// 아이디 : 영어 소문자, 숫자를 1~10글자로 가능/ 영문자로 시작해야됨
+   $("#userID").on("propertychange change paste input", function() {
+    let userID = $("#userID").val();
+		let userID_condition = /^[a-z]{1}[a-z0-9]{0,9}$/;
+
+			if (!userID_condition.test(userID)) {
+				view_txt_message("userID_result", "영어 소문자, 숫자만 10글자까지 입력 가능합니다.", "red");
+			} else {
+				view_txt_message("userID_result", "", "red");
+			}
+    });	
+	
+	// 아이디 중복확인 버튼
+	function userID_duplicate_check() {
+		let userID = $("#userID").val();
+		let userID_condition = /^[a-z]{1}[a-z0-9]{0,9}$/;
+
+		if (userID === '' || !userID_condition.test(userID)) {
+			view_txt_message("userID_result", "영어 소문자, 숫자만 10글자까지 입력 가능합니다.", "red");
+		} else {
+			let submit_args = commonFunc.makeArgs("userID", userID);
+			let result = commonFunc.postArgs("/id_duplicate", submit_args);
+
+			if (result === "ok") {
+				view_txt_message("userID_result", "사용가능한 아이디 입니다.", "blue");
+			} else {
+				view_txt_message("userID_result", "이미 사용중인 아이디 입니다.", "red");
+			}
+		}			
+	}
+	
+	// 비밀번호 : 8~16자리의 영어 대소문자, 숫자, 특수문자 가능
+	$("#password").on("propertychange change paste input", function() {
+		let password = $("#password").val();
+		let password_condition = /^(?=.*[a-zA-Z])((?=.*\d)(?=.*\W)).{8,16}$/;
+
+		if (!password_condition.test(password)) {
+			view_txt_message("password_result", "영어, 숫자, 특수문자를 모두 사용하여 8~16자리로 입력해 주세요.", "red");
+		} else {
+			view_txt_message("password_result", "", "red");
+		}
+	});		
+
+	// 비밀번호 확인 - 유효성 검사(비밀번호와 동일한 값)
+	$("#password_check").on("propertychange change paste input", function() {
+		let password = $("#password").val();
+		let password_check = $("#password_check").val();
+
+		if (password != password_check) {
+			view_txt_message("password_check_result", "비밀번호가 일치하지 않습니다.", "red");
+		} else {
+			view_txt_message("password_check_result", "", "blue");
+		}
+	});			
+		
+	// 이름 : 한글 1~5자 이내 작성
+	$("#name").on("propertychange change paste input", function() {
+		let name = $("#name").val();
+		let name_condition = /^[가-힣]{1,5}$/;
+
+		if (!name_condition.test(name)) {
+			view_txt_message("name_result", "한글로 5자 이내 작성해주세요.", "red");
+		} else {
+			view_txt_message("name_result", "", "red");
+		}
+	});		
+
+	// 생년월일 : 오늘보다 과거의 날짜만 선택가능	
+	$("#birth").on("propertychange change paste input", function() {
+		let birth = $("#birth").val();
+		let birthDate = new Date(birth);
+		let today = new Date();
+
+		if (birthDate > today || birthDate.toDateString() === today.toDateString()) {
+			view_txt_message("birth_result", "오늘보다 미래의 날짜는 선택할 수 없습니다.", "red");
+		} else {
+			view_txt_message("birth_result", "", "red");
+		}
+	});
+
+	// 상세한 주소 : 특수문자 불가능
+	$("#member_detail_addr").on("propertychange change paste input", function() {
+		let address = $("#member_detail_addr").val();
+		let address_condition = /^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣\s]+$/;
+
+		if (!address_condition.test(address)) {
+			view_txt_message("address_result", "상세주소를 정확히 입력해주세요.", "red");
+		} else {
+			view_txt_message("address_result", "", "red");
+		}
+	});
+	
+	// 주소검색		
+	function find_address(){
+		new daum.Postcode({
+			oncomplete: function(data) {
+
+				// 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+				// 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
+				// 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+				var roadAddr = data.roadAddress; // 도로명 주소 변수
+				var jibunAddr = data.jibunAddress; // 지번 주소 변수
+				// 우편번호와 주소 정보를 해당 필드에 넣는다.
+				document.getElementById('member_post').value = data.zonecode;
+				if(roadAddr !== ''){
+					document.getElementById("member_addr").value = roadAddr;
+				} 
+				else if(jibunAddr !== ''){
+					document.getElementById("member_addr").value = jibunAddr;
+				}
+			}
+		}).open();
+	}
+
+	// 이메일 : 영어 대소문자, 숫자만 가능
+	$("#email").on("propertychange change paste input", function() {
+		let email = $("#email").val();
+		let email_condition = /^[a-zA-Z0-9]+$/;
+
+		if (!email_condition.test(email)) {
+			view_txt_message("email_result", "영어 대소문자, 숫자만 사용 가능합니다.", "red");
+		} else {
+			view_txt_message("email_result", "", "red");
+		}   
+	});			
+	
+	// 이메일 도메인 유효성검사        	
+	$(document).ready(function() {
+		$("#email_domain").on("change", function() {
+			let selected_option = $(this).val(); // 선택된 도메인 옵션값
+
+			// 도메인 옵션 값 선택 시
+			if (selected_option !== '') {
+				view_txt_message("email_result", "", "red");
+				$("#direct_input_box").hide();
+				$("#direct_input_email").val(selected_option);
+			// 직접입력 선택 시	
+			} else {
+				$("#direct_input_box").show(); // 직접 입력하는 인풋박스 생성
+				$("#direct_input_email").val("");
+			}
+		});
+	});
+						
+	// 직접입력에 도메인 값 입력 : 영어소문자와 . 만 입력가능
+	$("#direct_input_email").on("propertychange change paste input", function() {
+		let direct_input_value = $(this).val();
+		let domain_condition = /^[a-z]*\.[a-z]*$/;
+
+		if (!domain_condition.test(direct_input_value)) {
+			view_txt_message("email_result", "이메일 형식이 유효하지 않습니다.", "red");
+		}	else {
+			view_txt_message("email_result", "", "red");
+		}
+	});	
+
+	// 회원가입 버튼
+	function btn_register() {
+		let userID 			= $("#userID").val();
+		let password 		= $("#password").val();
+		let name 			= $("#name").val();
+		let birth 			= $("#birth").val();
+		let zipcode			= $("#member_post").val();
+		let address 		= $("#member_addr").val() + " " + $("#member_detail_addr").val();
+		let number 			= $("#number_1").val() + "-" + $("#number_2").val() + "-" + $("#number_3").val();
+		let email 			= $("#email").val();
+		let email_domain	= $("#direct_input_email").val();
+		let email_final		= $("#email").val() + "@" + $("#direct_input_email").val();
+
+		// 메세지 초기화
+		view_txt_message("register_result", "", "red");
+
+		// 각 항목이 빈값인지 확인하고, 에러메세지 출력하기
+		// if만으로 연결하면 위에서부터 순서대로 나오지 않고, 밑에있는 인풋박스부터 선택되어서 부득이하게 else if 사용
+		if ($("#userID").val() === "") {
+			blank_check("#userID", "아이디가 입력되지 않았습니다.");
+		} else if ($("#password").val() === "") {
+			blank_check("#password", "비밀번호가 입력되지 않았습니다.");
+		} else if ($("#password_check").val() === "") {
+			blank_check("#password_check", "비밀번호 확인이 입력되지 않았습니다.");
+		} else if ($("#name").val() === "") {
+			blank_check("#name", "이름이 입력되지 않았습니다.");
+		} else if ($("#birth").val() === "") {
+			blank_check("#birth", "생년월일이 입력되지 않았습니다.");
+		} else if ($("#member_post").val() === "") {
+			blank_check("#member_post", "주소가 선택되지 않았습니다.");
+		} else if ($("#member_detail_addr").val() === "") {
+			blank_check("#member_detail_addr", "주소가 입력되지 않았습니다.");
+		} else if ($("#number_2").val() === "") {
+			blank_check("#number_2", "전화번호가 입력되지 않았습니다.");
+		} else if ($("#number_3").val() === "") {
+			blank_check("#number_3", "전화번호가 입력되지 않았습니다.");
+		} else if ($("#email").val() === "") {
+			blank_check("#email", "이메일이 입력되지 않았습니다.");
+		} else if ($("#direct_input_email").val() === "") {
+			blank_check("#direct_input_email", "이메일 도메인이 입력되지 않았습니다.");
+		} else {
+			$("#blank_check_validation").val("ok");
+		}
+
+		// 전화번호는 실시간 체크하지 않고 회원가입 버튼 클릭 시 유효성검사 체크
+		let combined_length = $("#number_2").val().length + $("#number_3").val().length;
+		if (combined_length < 7) {
+			view_txt_message("phone_number_result", "전화번호는 최소 10자리가 필요합니다.", "red");
+		} else {
+			view_txt_message("phone_number_result", "", "red");
+		}
+
+		// 유효성검사 안된부분 있는지 체크
+		if ($("#userID_result").text() === "사용가능한 아이디 입니다." &&
+			$("#password_result").text() === "" && 
+			$("#password_check_result").text() === "" && 
+			$("#name_result").text() === "" && 
+			$("#birth_result").text() === "" && 
+			$("#address_result").text() === "" && 
+			$("#phone_number_result").text() === "" && 
+			$("#email_result").text() === "" &&
+		    $("#blank_check_validation").val() === "ok") {
+
+			// 회원가입
+			let submit_args = '';
+			submit_args += commonFunc.makeArgs("userID", userID);
+			submit_args += commonFunc.makeArgs("password", password);
+			submit_args += commonFunc.makeArgs("name", name);
+			submit_args += commonFunc.makeArgs("birth", birth);
+			submit_args += commonFunc.makeArgs("zipcode", zipcode);
+			submit_args += commonFunc.makeArgs("address", address);
+			submit_args += commonFunc.makeArgs("number", number);
+			submit_args += commonFunc.makeArgs("email", email_final);
+			const result = commonFunc.postArgs("/register", submit_args);
+			if (result === 'ok'){
+				alert('회원가입이 완료 되었습니다.');
+				location.href='/';
+			} else {
+				view_txt_message("register_result", "회원가입에 실패하였습니다. 다시 한번 확인해주세요.", "red");
+			}		
+		} else {
+			view_txt_message("register_result", "유효하지 않은 항목이 있습니다. 다시 한번 확인해주세요.", "red");
+		}
+	}
+		
+		</script>
+	</body>
+</html>

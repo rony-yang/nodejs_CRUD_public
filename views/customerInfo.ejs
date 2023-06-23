@@ -1,0 +1,424 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>거래처 정보</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!-- <link rel="stylesheet" href="css/main.css" /> -->
+		<script src="js/main_contents.js"></script>
+		
+		<!-- 부트스트랩 사용 JavaScript 와 CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+		<!-- jQuery 사용 -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<!-- 날짜 및 시간 처리를 쉽게 하기 위한 JavaScript 라이브러리 -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+		<!-- dataTable 사용 위한 JavaScript 와 CSS -->
+		<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+		<!-- DataTables 확장 플러그인 JavaScript 와 CSS -->
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css"/>
+		<script type="text/javascript" src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous">
+
+		<style>
+		@font-face {
+			font-family: 'SUITE-Regular';
+			src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+			font-weight: 400;
+			font-style: normal;
+		}
+
+		h1, h2, h3, h4, h5, h6 {
+			font-family: 'SUITE-Regular', Arial, sans-serif;
+		}
+
+		body {
+			font-family: 'SUITE-Regular', Arial, sans-serif;
+		}	
+
+		input[type="checkbox"] {
+			width: 1.2em;
+			height: 1.2em;
+		}	
+			
+		.register_head_style {
+			font-weight: bold;
+		}
+			
+		.register_validation_result {
+			text-align: center;
+			color: #ff0000;
+			/* font-weight: bold; */
+			/* margin-top: 0.8rem; */
+			margin-bottom: -2.5rem;
+		}
+			
+		.page-item.active .page-link {
+			/* z-index: 3; */
+			color: #000000; 
+			background-color: #cdb1cb;
+			border-color: #fff;
+		}
+
+		.dataTables_wrapper .dataTables_paginate .paginate_button {
+			padding: 0em 0em;
+		}
+			
+		.dataTables_wrapper:hover .dataTables_paginate:hover .paginate_button:hover {
+			border-color: #fff;
+		}
+			
+		#main input[type="submit"].danger,
+		#main input[type="reset"].danger,
+		#main input[type="button"].danger,
+		#main button.danger,
+		#main .button.danger {
+		background-color: #ff6666;
+		color: #ffffff !important;
+		box-shadow: none;
+		}
+
+		#main input[type="submit"].danger:hover,
+		#main input[type="reset"].danger:hover,
+		#main input[type="button"].danger:hover,
+		#main button.danger:hover,
+		#main .button.danger:hover {
+		background-color: #ff8080;
+		}
+
+		#main input[type="submit"].primary,
+		#main input[type="reset"].primary,
+		#main input[type="button"].primary,
+		#main button.primary,
+		#main .button.primary {
+			background-color: #6666ff;
+			color: #ffffff !important;
+			box-shadow: none;
+		}
+
+		#main input[type="submit"].primary:hover,
+		#main input[type="reset"].primary:hover,
+		#main input[type="button"].primary:hover,
+		#main button.primary:hover,
+		#main .button.primary:hover {
+			background-color: #8080ff;
+		}
+
+		#main input[type="submit"].success,
+		#main input[type="reset"].success,
+		#main input[type="button"].success,
+		#main button.success,
+		#main .button.success {
+			background-color: #1c975d;
+			color: #ffffff !important;
+			box-shadow: none;
+		}
+
+		#main input[type="submit"].success:hover,
+		#main input[type="reset"].success:hover,
+		#main input[type="button"].success:hover,
+		#main button.success:hover,
+		#main .button.success:hover {
+			background-color: #20ac6b;
+		}
+			
+		#main input[type="submit"].warning,
+		#main input[type="reset"].warning,
+		#main input[type="button"].warning,
+		#main button.warning,
+		#main .button.warning {
+			background-color: #ffc107;
+			color: #ffffff !important;
+			box-shadow: none;
+		}
+
+		#main input[type="submit"].warning:hover,
+		#main input[type="reset"].warning:hover,
+		#main input[type="button"].warning:hover,
+		#main button.warning:hover,
+		#main .button.warning:hover {
+			background-color: #ffcc33;
+		}
+		
+		/* 인풋박스 배경색상 흰색 */
+		.input-style[readonly] {
+			background-color: #FFF;
+		}
+
+		</style>
+		
+		<%-include('common/headnavbar.ejs')%>
+
+
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<hr>
+						<h1 class="register_head_style">거래처 정보</h1>
+						<br>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Get Started -->
+							<section class="main special">
+
+								<body>
+									<div class="dataTable_body">
+										<table id="customerInfo_dataTable" style="width:100%">
+												
+											
+											
+										</table>	
+		
+									</div>
+									<div style="margin-bottom: 30px;">
+										<a class="button warning" onclick="dataTable_detail()"  data-bs-toggle="modal" data-bs-target="#detailModal">상세정보</a>
+										<a class="button primary" onclick="dataTable_add()" 	data-toggle="modal" data-target="#addModal">등록</a>
+										<a class="button success" onclick="dataTable_modify()"	data-toggle="modal" data-target="#modifyModal">수정</a>
+										<a class="button danger"  onclick="dataTable_delete()">삭제</a>
+									</div>
+									
+									<p id="data_validation" class="register_validation_result"></p>
+									
+								</body>
+
+							</section>
+					</div>
+
+			<%-include('common/footer.ejs')%>
+
+			</div>
+
+		<!-- 상세정보 버튼 모달-->
+		<div class="modal fade" id="detailModal" data-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+				<div class="modal-content">
+					<!-- 제목 -->
+					<div class="modal-header">
+						<h4 class="modal-title"><i class="fa fa-pencil-square-o"></i>거래처 상세정보</h4>
+					</div>	
+					<!-- 내용 -->
+					<form name="customer_detail">
+					<div class="modal-body" style="text-align: center;">
+						<div class="box-body">
+							<!-- 내용 테이블 -->
+						<table>
+							<tr>
+								<th style="width: 20%;">사업자 등록번호</th>
+								<th style="width: 30%;"><input type="text" class="form-control input-style" id="detail_registrationNum" readonly></th>
+								<th style="width: 20%; margin-left: 20px;">법인명(단체명)</th>
+								<th style="width: 30%;"><input type="text" class="form-control input-style" id="detail_name" readonly></th>
+							</tr>
+							<tr>
+								<th>대표자</th>
+								<th><input type="text" class="form-control input-style" id="detail_representative" readonly></th>
+								<th style="margin-left: 20px;">개업연월일</th>
+								<th><input type="text" class="form-control input-style" id="detail_date" readonly></th>
+							</tr>
+							<tr>
+								<th>법인 등록번호</th>
+								<th><input type="text" class="form-control input-style" id="detail_corporateRegistrationNum" readonly></th>
+							</tr>
+							<tr>
+								<th>사업장 소재지</th>
+								<th colspan="3"><input type="text" class="form-control input-style" id="detail_location" readonly></th>
+							</tr>
+							<tr>
+								<th>본점 소재지</th>
+								<th colspan="3"><input type="text" class="form-control input-style" id="detail_locationOfHeadOffice" readonly></th>
+							</tr>
+							<tr>
+								<th>업태</th>
+								<th><input type="text" class="form-control input-style" id="detail_typeOfBusiness" readonly></th>
+								<th style="margin-left: 20px;">종목</th>
+								<th><input type="text" class="form-control input-style" id="detail_item" readonly></th>
+							</tr>
+							<tr>
+								<th>전자우편</th>
+								<th><input type="text" class="form-control input-style" id="detail_email" readonly></th>
+								<th style="margin-left: 20px;">연락처</th>
+								<th><input type="text" class="form-control input-style" id="detail_callNum" readonly></th>
+							</tr>
+							<tr>
+								<th>담당자</th>
+								<th><input type="text" class="form-control input-style" id="detail_personInCharge" readonly></th>
+							</tr>
+							<tr>
+								<th>메모</th>
+								<th colspan="3">
+									<textarea class="form-control input-style" id="detail_memo" readonly></textarea>
+								</th>
+							</tr>
+						</table>
+
+							<!-- 닫기 버튼 -->
+							<div id='detailModal_close' style="margin-top: 30px;">
+								<button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+							</div>
+						</div>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div> <!-- 상세정보 버튼 모달 끝 -->
+
+		
+		
+
+	</body>
+	
+	<script>
+	// 유효성검사 메세지 출력
+	function view_txt_message(elementId, message, color) {
+		var element = document.getElementById(elementId);
+			element.innerText = message;
+
+		if (color === "red") {
+				element.classList.remove("blue_text");	
+				element.classList.add("red_text");
+			} else if (color === "blue") {
+				element.classList.remove("red_text");
+				element.classList.add("blue_text");
+			}
+	}		
+		
+		
+	$(document).ready(function () {
+		view_dataTable();
+	});	
+			  
+	function view_dataTable() {	
+		$('.dataTable_body').empty();
+        $('.dataTable_body').append("<table id='customerInfo_dataTable' style='width: 100%'></table>");
+		
+		$.ajax({
+			url: "customerInfo_get",
+			type: "POST",
+			data: {},
+			dataType: "json",
+			success: function(result) {
+				$('#customerInfo_dataTable').DataTable({
+					data			: result, 			// 데이터값
+					responsive		: true, 			// 반응형 설정
+					lengthMenu		: [ 1, 3, 5, 10 ], 	// 표시 건수 단위
+					displayLength	: 1, 				// 표시 건수 설정
+					stateSave		: true, 			// 현재 상태 보존
+					scrollX			: true, 			// 가로스크롤
+					columnDefs		: [{ targets: '_all', className: "text-center" }],
+					columns 		: [
+										{title: '<input type="checkbox" id="select_all_checkbox">',
+										 data: null,
+										 render: function(data, type, full, meta) {
+											return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data.No).html() + '">';
+										 },
+										 orderable: false,
+										 className: 'select-checkbox'
+										},
+										{ title: "사업자등록번호", data: "registrationNum" },
+										{ title: "법인명(단체명)", data: "name" },
+										{ title: "대표자", data: "representative" },
+										{ title: "법인등록번호", data: "corporateRegistrationNum" },
+										{ title: "연락처", data: "callNum" },
+										{ title: "담당자", data: "personInCharge" }
+									  ],
+					language		: {
+										emptyTable: "데이터가 없습니다.",
+										lengthMenu: "페이지당 _MENU_ 개씩 보기",
+										info: "현재 _START_ - _END_ / _TOTAL_건",
+										infoEmpty: "데이터 없음",
+										infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+										search: "검색: ",
+										zeroRecords: "일치하는 데이터가 없습니다.",
+										loadingRecords: "로딩중...",
+										processing: "잠시만 기다려 주세요...",
+										paginate: {
+											next: "다음",
+											previous: "이전"
+										}
+									  }
+				}); //--DataTable
+			}, //--success
+			error: function(request, status, error) {
+                console.error(error);
+            }
+		}); //--ajax
+	}; //--view_dataTable
+		
+		
+    // 전체체크 기능
+    $(document).on('click', '#select_all_checkbox', function() {
+        $('input[type="checkbox"][name="id[]"]').prop('checked', this.checked);
+    });
+
+    // 하위 체크박스 해제되면 전체체크 해제시키기
+    $(document).on('change', 'input[type="checkbox"][name="id[]"]', function() {
+        let all_checked = $('input[type="checkbox"][name="id[]"]').length === $('input[type="checkbox"][name="id[]"]:checked').length;
+        $('#select_all_checkbox').prop('checked', all_checked);
+    });
+		
+	// 상세정보
+	function dataTable_detail() {
+		// 체크값 단수로 받아오기
+		// let check_value = $("input:checkbox[name='id[]']:checked").val();
+		
+		// 체크값 복수로 받아오기
+		let check_value = $("input:checkbox[name='id[]']:checked").map(function() {
+			return $(this).val();
+		}).get();
+		
+		if (check_value.length === 0) {
+			view_txt_message("data_validation", "거래처명을 먼저 선택해주세요.", "red");
+		} else if(check_value.length > 1) {
+			view_txt_message("data_validation", "한번에 1개의 정보만 선택 가능합니다.", "red");
+		} else {
+			view_txt_message("data_validation", "", "red");
+			let submit_args = '';
+			submit_args += commonFunc.makeArgs("No", check_value);
+			const ret = commonFunc.postArgs("/customer_detail", submit_args);
+
+			let data = ret[0];
+			$('#detail_registrationNum').val(data.registrationNum);
+			$('#detail_name').val(data.name);
+			$('#detail_representative').val(data.representative);
+			$('#detail_date').val(data.date);
+			$('#detail_corporateRegistrationNum').val(data.corporateRegistrationNum);
+			$('#detail_location').val(data.location);
+			$('#detail_locationOfHeadOffice').val(data.locationOfHeadOffice);
+			$('#detail_typeOfBusiness').val(data.typeOfBusiness);
+			$('#detail_item').val(data.item);
+			$('#detail_email').val(data.email);
+			$('#detail_callNum').val(data.callNum);
+			$('#detail_personInCharge').val(data.personInCharge);
+			$('#detail_memo').val(data.memo);
+		}
+	}		
+		
+	// 등록
+	function dataTable_add() {
+		
+	}
+		
+	// 수정
+	function dataTable_modify() {
+		
+	}
+		
+	// 삭제
+	function dataTable_delete() {
+		
+	}	
+	
+	</script>
+	
+</html>

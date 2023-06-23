@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>로그인</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="css/main.css" />
+		<script src="js/main_contents.js"></script>
+		
+		<style>
+			
+			@font-face {
+				font-family: 'SUITE-Regular';
+				src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+				font-weight: 400;
+				font-style: normal;
+			}
+			
+			h1, h2, h3, h4, h5, h6 {
+				font-family: 'SUITE-Regular', Arial, sans-serif;
+			}
+			
+			body {
+				font-family: 'SUITE-Regular', Arial, sans-serif;
+			}
+			
+			.register_head_style {
+				font-weight: bold;
+			}	
+			
+			.register_form_style {
+				display: inline-flex;
+				align-items: baseline;
+				width: 100%;
+				position: relative;
+				text-align: center;
+				margin-bottom: 3rem;
+			}
+			
+			.register_name_style {
+				font-size: 1.3rem;
+				color: #636363;
+				font-weight: bold;
+				width: 20%;
+			}
+
+			.register_input_style {
+				width: 80%;
+				display: inline-block;
+			}
+			
+			#main input[type="submit"].primary,
+			#main input[type="reset"].primary,
+			#main input[type="button"].primary,
+			#main button.primary,
+			#main .button.primary {
+				background-color: #6666ff;
+				color: #ffffff !important;
+				box-shadow: none;
+			}
+			
+			#main input[type="submit"].primary:hover,
+			#main input[type="reset"].primary:hover,
+			#main input[type="button"].primary:hover,
+			#main button.primary:hover,
+			#main .button.primary:hover {
+				background-color: #8080ff;
+			}
+			
+			.register_validation_result {
+				text-align: center;
+				color: #ff0000;
+				/* font-weight: bold; */
+				/* margin-top: 0.8rem; */
+				margin-bottom: -2.5rem;
+			}
+			
+			.red_text {
+				color: #ff0000;
+				text-align: center;
+				display: block;
+				/* font-weight: bold; */
+			}
+
+			.blue_text {
+				color: #435ebe;
+				text-align: center;
+				/* font-weight: bold; */
+			}
+		</style>
+		
+		<%-include('common/headnavbar.ejs')%>
+		
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<hr>
+						<h1 class="register_head_style">로그인</h1>
+						<br>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Get Started -->
+							<section id="cta" class="main special">
+								
+								<header class="major">
+									
+									<h3 class="register_head_style">로그인 정보를 입력해 주세요.</h3>
+								</header>
+								
+								<body>
+
+									<div class="register_form_style">
+										<div class="register_name_style">
+											아이디
+										</div>
+										<div class="register_input_style">
+											<input type="text" id="input_userID" class="form-control form-control-xl" placeholder="아이디를 입력해 주세요." onkeydown="moveFocus(event, 'input_password')">
+										</div>
+									</div>
+									
+									<div class="register_form_style">
+										<div class="register_name_style">
+											비밀번호
+										</div>
+										<div class="register_input_style">
+											<input type="password" id="input_password" class="form-control form-control-xl" placeholder="비밀번호를 입력해 주세요." onkeydown="moveFocus(event, 'btn_login')">
+										</div>
+									</div>
+									
+									<p id="login_result" class="register_validation_result"></p> 
+								</body>
+								
+								<footer class="major">
+									<a id="btn_login" class="button primary" onclick="login_action()">로그인</a>
+									<p style="font-weight: bold; margin-top: 25px;">가입 정보가 없으신가요? <a href="/register" style="text-decoration: none;">회원가입 하기</a></p>
+								</footer>
+								
+							</section>
+					</div>
+
+			<%-include('common/footer.ejs')%>
+
+			</div>
+		
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+		
+	<script>
+	// 페이지 로딩하면 아이디로 포커스 이동	
+	$(document).ready(function() {
+		$("#input_userID").focus();
+	});	
+		
+	// 유효성검사 메세지 출력
+	function view_txt_message(elementId, message, color) {
+		var element = document.getElementById(elementId);
+			element.innerText = message;
+
+		if (color === "red") {
+				element.classList.remove("blue_text");	
+				element.classList.add("red_text");
+			} else if (color === "blue") {
+				element.classList.remove("red_text");
+				element.classList.add("blue_text");
+			}
+	}
+		
+	// 공백여부 검사해서 에러메세지 출력하고 포커스 이동하기
+	function blank_check(fieldId, message) {
+		view_txt_message("login_result", message, "red");
+		$(fieldId).focus();
+	}	
+		
+	// 엔터키 눌렀을때 동작 : 아이디-> 비밀번호 이동, 비밀번호->로그인 이동 
+	function moveFocus(event, next) {
+		if (event.keyCode === 13) {
+				event.preventDefault();
+				document.getElementById(next).focus();
+				if (next === 'btn_login') { // 다음버튼이 로그인 버튼이면 로그인 동작 실행하기
+					login_action();
+			}
+		}
+	}	
+	
+	// 로그인 버튼 클릭 이벤트	
+	function login_action() {
+		let userID		= $("#input_userID").val();
+		let password	= $("#input_password").val();
+		let submit_args = '';
+		
+		// 공백 여부 검사
+		if (userID === "") {
+			blank_check("#input_userID", "아이디가 입력되지 않았습니다.");
+		} else if (password === "") {
+			blank_check("#input_password", "비밀번호가 입력되지 않았습니다.");
+		// 공백 없을 시 로그인 시도	
+		} else {
+			submit_args += commonFunc.makeArgs("userID", userID);
+			submit_args += commonFunc.makeArgs("password", password);
+			let result = commonFunc.postArgs("/loginaction", submit_args);
+			// 로그인 성공
+			if (result == "ok") {
+				view_txt_message("login_result", "", "red");
+				sessionStorage.setItem("sessionID", userID);
+				location.href = "/summarySheet";
+			// 로그인 실패 : 빈 값이거나 값이 틀렸을 경우
+			} else {
+				view_txt_message("login_result", "아이디 또는 비밀번호를 잘못 입력했습니다.", "red");
+			}
+		}	
+	}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</script>
+	</body>
+</html>
