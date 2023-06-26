@@ -12,6 +12,7 @@
 	5. login.ejs 사용
 	6. headnavbar.ejs 사용
 	7. customerInfo.ejs 사용
+	8. summarySheet.ejs 사용
 
 */
 
@@ -406,7 +407,7 @@ app.post("/customer_modify", async (req, res) => {
 	let personInCharge				= req.body.personInCharge;
 	let memo						= req.body.memo;
 	let No							= req.body.No;
-	console.log(No);
+
 	let rows = await asyncQuery(`UPDATE YSY.customerInfo 
 								SET registrationNum = '${registrationNum}',
 									name = '${name}',
@@ -426,7 +427,7 @@ app.post("/customer_modify", async (req, res) => {
 	
 	if (rows.affectedRows != 0 && rows.errno == undefined) {
 	  res.send('ok');
-	  console.log("거래처 정보 수정완료");
+	  console.log(No + "번 정보 수정완료");
 	} else {
 	  res.send('fail');
 	  console.log("거래처 정보 수정 실패");
@@ -443,7 +444,7 @@ app.post('/customer_delete', async (req, res) => {
 	
 	if (rows.affectedRows != 0 && rows.errno == undefined) {
 	  res.send('ok');
-	  console.log("거래처 정보 삭제완료");
+	  console.log(check_No + "번 정보 삭제완료");
 	} else {
 	  res.send('fail');
 	  console.log("거래처 정보 삭제 실패");
@@ -452,3 +453,30 @@ app.post('/customer_delete', async (req, res) => {
 
 
 /////////////////////////////////// 7. customerInfo.ejs 사용 종료 ///////////////////////////////////
+
+/////////////////////////////////// 8. summarySheet.ejs 사용 ///////////////////////////////////
+
+// 날짜 필터로 검색하기
+app.post('/summarySheet_search', async (req, res) => {
+	let startDate = req.body.startDate;
+	let endDate = req.body.endDate;
+	
+	console.log(startDate);
+	console.log(endDate);
+	
+	// let rows = await asyncQuery(`DELETE FROM YSY.customerInfo
+	// 							 WHERE No 
+	// 							 IN (${check_No.map(value => `'${value}'`).join(',')})
+	// 							`);
+	
+	// if (rows.affectedRows != 0 && rows.errno == undefined) {
+	//   res.send('ok');
+	//   console.log(check_No + "번 정보 삭제완료");
+	// } else {
+	//   res.send('fail');
+	//   console.log("거래처 정보 삭제 실패");
+	// }
+});
+
+/////////////////////////////////// 8. summarySheet.ejs 사용 종료 ///////////////////////////////////
+

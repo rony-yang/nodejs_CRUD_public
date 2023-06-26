@@ -727,10 +727,13 @@
 
 			if (ret === 'ok'){
 				alert('등록이 완료 되었습니다.');
+				customer_add.reset(); // 페이지 초기화
 				$('#addModal').modal('hide');
 				view_dataTable();
+				view_txt_message("data_validation", "", "red");
 			} else {
 				alert('등록에 실패하였습니다. 정보를 다시 확인해주세요.');
+				view_txt_message("data_validation", "", "red");
 			}	
 		}
 	}
