@@ -317,12 +317,6 @@ app.post('/customerInfo_get', async (req, res) => {
     let rows = await asyncQuery(`SELECT * 
 								 FROM YSY.customerInfo
 								`);
-    // if (!req.session.user || req.session.user === undefined) {
-    // 	res.json(rows);
-    // } else {
-    // 	sessionID = req.session.user.id;
-    // 	res.json({ rows: rows, sessionID: sessionID });
-    // }
 	res.json(rows);
 });
 
