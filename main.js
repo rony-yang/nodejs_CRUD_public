@@ -138,17 +138,16 @@ app.get('/register', async (req, res) => {
 
 // 거래처정보
 app.get('/customerInfo', async (req, res) => {
-	res.render('customerInfo');
-	// let rows = await asyncQuery(`SELECT * 
-	// 							 FROM YSY.customerInfo 
-	// 							`);
-	
-	// if (!req.session.user || req.session.user === undefined) {
-	// res.render('customerInfo', {rows: rows});
-	// } else {
-	// sessionID = req.session.user.id;
-	// res.render('customerInfo', {rows: rows, sessionID: sessionID});
-	// }	
+	let rows = await asyncQuery(`SELECT * 
+								 FROM YSY.customerInfo
+								`);
+
+	if (!req.session.user || req.session.user === undefined) {
+        res.render('customerInfo', {rows: rows});
+    } else {
+        sessionID = req.session.user.id;
+        res.render('customerInfo', {rows: rows, sessionID: sessionID});
+    }
 });
 
 // 집계표
@@ -174,11 +173,6 @@ app.get('/summarySheet', async (req, res) => {
         sessionID = req.session.user.id;
         res.render('summarySheet', { rows: rows, monthly_total: monthly_total, sessionID: sessionID});
     }
-});
-
-app.get('/test', async (req, res) => {
-    res.render('test');
-
 });
 
 /////////////////////////////////// 3. 페이지 렌더링 종료 ///////////////////////////////////
@@ -323,12 +317,13 @@ app.post('/customerInfo_get', async (req, res) => {
     let rows = await asyncQuery(`SELECT * 
 								 FROM YSY.customerInfo
 								`);
-    if (!req.session.user || req.session.user === undefined) {
-    	res.json(rows);
-    } else {
-    	sessionID = req.session.user.id;
-    	res.json({ rows: rows, sessionID: sessionID });
-    }
+    // if (!req.session.user || req.session.user === undefined) {
+    // 	res.json(rows);
+    // } else {
+    // 	sessionID = req.session.user.id;
+    // 	res.json({ rows: rows, sessionID: sessionID });
+    // }
+	res.json(rows);
 });
 
 // 정보 상세보기
