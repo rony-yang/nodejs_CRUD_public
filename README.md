@@ -6,7 +6,7 @@ nodeJS 개인 프로젝트
 **2. 메인 사진**
 ![main2](https://github.com/rony-yang/nodejs_CRUD_public/assets/116271236/0e9e1e73-77a1-40c4-ba46-bb6fbcd4eaac)
 
-![222](https://github.com/rony-yang/nodejs_CRUD_public/assets/116271236/ad0e71a3-0ab0-4c26-b51b-bacec05bfd82)
+![11](https://github.com/rony-yang/nodejs_CRUD_public/assets/116271236/786cce32-9f99-416d-b2c0-de85936445fd)
 
 **3. URL 주소** : https://nodejs-crud-qlcpt.run.goorm.site/ 
 
