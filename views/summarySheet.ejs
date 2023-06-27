@@ -271,6 +271,20 @@
 	</body>
 	
 	<script>
+	// 날짜 한글로 변경하기
+	$.datepicker.setDefaults({
+        dateFormat: 'yy-mm-dd',
+        prevText: '이전 달',
+        nextText: '다음 달',
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년'
+    });	
+	
 	$(function() {
 		let startDateInput = $('#startDateInput');
 		let endDateInput = $('#endDateInput');
@@ -284,37 +298,51 @@
 			event.preventDefault();
 
 			// 날짜 검색하여 받아오기
-			let startDate = startDateInput.datepicker('getDate');
-			let endDate = endDateInput.datepicker('getDate');
+			let startDate = formatDate(startDateInput.datepicker('getDate'));
+			let endDate = formatDate(endDateInput.datepicker('getDate'));
 
 			// 날짜 포맷 형식 변경
-			let formattedStartDate = startDate.toLocaleDateString('en-GB');
-			let formattedEndDate = endDate.toLocaleDateString('en-GB');			
-			
-			console.log('시작일 :: ', formattedStartDate);
-			console.log('종료일 :: ', formattedEndDate);
-			
-			let submit_args = '';
-			submit_args += commonFunc.makeArgs("startDate", formattedStartDate);
-			submit_args += commonFunc.makeArgs("endDate", formattedEndDate);
-			const ret = commonFunc.postArgs("/summarySheet_search", submit_args);
+		    function formatDate(date) {
+				let year = date.getFullYear();
+				let month = String(date.getMonth() + 1).padStart(2, '0');
+				let day = String(date.getDate()).padStart(2, '0');
+				return `${year}-${month}-${day}`;
+			}
 
-			if (ret === 'ok'){
-				alert('등록이 완료 되었습니다.');
-				customer_add.reset(); // 페이지 초기화
-				$('#addModal').modal('hide');
-				view_dataTable();
-				view_txt_message("data_validation", "", "red");
-			} else {
-				alert('등록에 실패하였습니다. 정보를 다시 확인해주세요.');
-				view_txt_message("data_validation", "", "red");
-			}	
-			
-			
+			let submit_args = '';
+			submit_args += commonFunc.makeArgs("startDate", startDate);
+			submit_args += commonFunc.makeArgs("endDate", endDate);
+			// const ret = commonFunc.postArgs("/summarySheet_search", submit_args);
+
+			// if (ret === 'ok'){
+			// 	location.href = '/summarySheet';
+			// } else {
+			// 	alert('검색에 실패하였습니다.');
+			// }
+			$.ajax({
+				url: '/summarySheet_search',
+				type: 'POST',
+				data: submit_args,
+				success: function(response) {
+				  // Replace the table content with the updated data
+				  $('#summarySheet').html(response);
+
+				  // You can also update any other elements on the page if needed
+
+				  // Clear the date inputs
+				  startDateInput.val('');
+				  endDateInput.val('');
+
+				  // Update the date range display or any other UI elements
+				  $('#dateRangeDisplay').text(`Showing results from ${startDate} to ${endDate}`);
+				},
+				error: function() {
+				  alert('Search failed.');
+				}
+			});
 			
 			
 		});
-
     });
 
 	</script>

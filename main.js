@@ -460,22 +460,20 @@ app.post('/customer_delete', async (req, res) => {
 app.post('/summarySheet_search', async (req, res) => {
 	let startDate = req.body.startDate;
 	let endDate = req.body.endDate;
+
+	let rows = await asyncQuery(`SELECT *
+								 FROM YSY.ledger
+								 WHERE date >= '${startDate}'
+								 	and date <= '${endDate}'
+								`);
 	
-	console.log(startDate);
-	console.log(endDate);
-	
-	// let rows = await asyncQuery(`DELETE FROM YSY.customerInfo
-	// 							 WHERE No 
-	// 							 IN (${check_No.map(value => `'${value}'`).join(',')})
-	// 							`);
-	
-	// if (rows.affectedRows != 0 && rows.errno == undefined) {
-	//   res.send('ok');
-	//   console.log(check_No + "번 정보 삭제완료");
-	// } else {
-	//   res.send('fail');
-	//   console.log("거래처 정보 삭제 실패");
-	// }
+	if (rows.affectedRows != 0 && rows.errno == undefined) {
+	  res.send('ok');
+	  console.log(startDate + "에서 " + endDate + "까지 날짜 검색 완료");
+	} else {
+	  res.send('fail');
+	  console.log("날짜 검색 실패");
+	}
 });
 
 /////////////////////////////////// 8. summarySheet.ejs 사용 종료 ///////////////////////////////////
