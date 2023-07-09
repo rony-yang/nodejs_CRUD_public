@@ -175,13 +175,10 @@
 								<body>
 									
 								<form>
-									<label for="startDateInput" class="date_style" style="margin-left: 100px;">시작일</label>
-									<input type="text" id="startDateInput" name="startDateInput">
-
-									<label for="endDateInput" class="date_style" style="margin-left: 30px;">종료일</label>
-									<input type="text" id="endDateInput" name="endDateInput">
-
-									&ensp;&ensp;<button id="searchButton" class="btn btn-purple" type="submit" style="margin-right: 100px;">검색</button>
+									<input type="date" class = "form-control" style = "width :20%; margin-right : 10px;" id = "date1" value = "<%=oneMonthAgoStr%>">
+									<span style ="display: flex; align-items: center;">~</span>
+									<input type="date" class = "form-control" style = "width :20%; margin-left:10px; margin-right:10px;" id = "date2" value = "<%=today%>">
+									<input type="button" class="btn btn-sm btn-success" value="조회" onclick = "btnSearch()" />
 								</form>
 								
 								<p id="dateRangeDisplay" style="margin-top: -20px; margin-bottom: 50px;"></p>	
@@ -271,79 +268,75 @@
 	</body>
 	
 	<script>
-	// 날짜 한글로 변경하기
-	$.datepicker.setDefaults({
-        dateFormat: 'yy-mm-dd',
-        prevText: '이전 달',
-        nextText: '다음 달',
-        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-        showMonthAfterYear: true,
-        yearSuffix: '년'
-    });	
+
+// 날짜로 검색한 내용 출력
+function printValue(beforeDate, afterDate) {
+	$('#summarySheet tbody').empty();
+	$('#summarySheet tbody').append("<table id='summarySheet tbody'></table>");
+	$.ajax({
+		url: "viewBtnSearch",
+		type: "POST",
+		data: {
+				beforeDate : beforeDate,
+				afterDate  : afterDate
+			  },
+		dataType: "json",
+		success: function(result) {
+		
+			$('#dataTable').DataTable({	
+				data: result,
+				columns: [
+							{ title : 'No', data : null},
+							{ title : 'ID', data : 'id'},
+							{ title : 'IP', data : 'ip'},
+							{ title : '구분', data : 'inoutTxt'},
+							{ title : '시간', data : 'updatetime'}
+						 ],
+				columnDefs: [{
+								targets: 0, // 첫번째 자리에 No 숫자 갯수만큼 카운트
+								render: function(data, type, row, meta) {
+									return meta.row + 1;
+								}
+							},
+							{
+								targets: '_all',
+								className: "text-center"
+                        	}]
+			})
+		}, 
+		error: function(request, status, error) {
+        	console.error(error);
+        }
+	})
+
 	
-	$(function() {
-		let startDateInput = $('#startDateInput');
-		let endDateInput = $('#endDateInput');
+};
 
-		// 입력 초기화
-		startDateInput.datepicker();
-		endDateInput.datepicker();
+// 조회 버튼 클릭 이벤트	
+function btnSearch() {
+	let beforeDate = $("#date1").val();
+	let afterDate = $("#date2").val();
+	let submit_args = '';
+	
+	if (beforeDate > afterDate) {
+		alert('날짜 형식이 잘못되었습니다.');
+	} else if (beforeDate === '' || afterDate === '') {
+		alert('날짜가 입력되지 않았습니다.');
+	} else {
+		submit_args += commonFunc.makeArgs("beforeDate", beforeDate);
+		submit_args += commonFunc.makeArgs("afterDate", afterDate);
+		const result = commonFunc.postArgs("/viewBtnSearch", submit_args);
+		if (result === 'ok'){
+		
+		} else {
+		
+		}		
 
-		// 검색 버튼 이벤트 리스너
-		$('#searchButton').click(function(event) {
-			event.preventDefault();
-
-			// 날짜 검색하여 받아오기
-			let startDate = formatDate(startDateInput.datepicker('getDate'));
-			let endDate = formatDate(endDateInput.datepicker('getDate'));
-
-			// 날짜 포맷 형식 변경
-		    function formatDate(date) {
-				let year = date.getFullYear();
-				let month = String(date.getMonth() + 1).padStart(2, '0');
-				let day = String(date.getDate()).padStart(2, '0');
-				return `${year}-${month}-${day}`;
-			}
-
-			let submit_args = '';
-			submit_args += commonFunc.makeArgs("startDate", startDate);
-			submit_args += commonFunc.makeArgs("endDate", endDate);
-			// const ret = commonFunc.postArgs("/summarySheet_search", submit_args);
-
-			// if (ret === 'ok'){
-			// 	location.href = '/summarySheet';
-			// } else {
-			// 	alert('검색에 실패하였습니다.');
-			// }
-			$.ajax({
-				url: '/summarySheet_search',
-				type: 'POST',
-				data: submit_args,
-				success: function(response) {
-				  // Replace the table content with the updated data
-				  $('#summarySheet').html(response);
-
-				  // You can also update any other elements on the page if needed
-
-				  // Clear the date inputs
-				  startDateInput.val('');
-				  endDateInput.val('');
-
-				  // Update the date range display or any other UI elements
-				  $('#dateRangeDisplay').text(`Showing results from ${startDate} to ${endDate}`);
-				},
-				error: function() {
-				  alert('Search failed.');
-				}
-			});
-			
-			
-		});
-    });
-
+	}
+}			
+		
+		
+		
+		
 	</script>
 </html>

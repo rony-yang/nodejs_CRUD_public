@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<style>	
+		.container {
+		  display: flex;
+		}
+
+		.box1 {
+		  float: left; 
+		  width: 15%;
+		}
+
+		.box2 {
+		  display: flex;
+		  flex-direction: column;
+		  align-items: center;
+		  justify-content: center;
+		  width: 5%;
+		  margin-top: 60px;
+		  margin-left: -75px;
+
+		}
+
+		.box3 {
+		  float: left;
+		  width: 15%;
+		}
+
+		.form-select {
+		  overflow-y: hidden;
+		  width: 130px;
+		  height: 150px;
+		}
+
+		#viewResult {
+		  font-weight: bold;
+		  font-size: 1.5em;
+		}
+
+    </style>
+	</head>
+	<body>
+		<div class="container">
+			
+			<div class="box1">
+				<p>선택할 식당</p>
+				<select id="mySelect" class="form-select" multiple aria-label="multiple select example">
+					<option value="함흥">함흥</option>
+					<option value="천안문">천안문</option>
+					<option value="김장독">김장독</option>
+					<option value="아우내">아우내</option>
+					<option value="닭곰탕">닭곰탕</option>
+					<option value="가미">가미</option>
+				</select>				
+			</div>
+			
+			<div class="box2">
+				<button onclick="moveRight()">▶</button>
+				<br>
+				<button onclick="moveLeft()">◀</button>
+			</div>
+			
+			<div class="box3">
+			<p>제외 식당</p>
+				<select class="form-select" multiple aria-label="multiple select example">
+
+				</select>
+			</div>
+			
+		</div>
+	<br>
+	<button onclick="selectMenu()" style="">선택</button>
+	<br>
+	<div>
+		오늘의 랜덤 메뉴는&ensp;<span id="viewResult"></span>&ensp;입니다.
+	</div>
+
+	</body>
+	
+</html>
+<script>
+
+// 메뉴에서 삭제시키기
+function moveRight() {
+  let selectElement = document.getElementById("mySelect");
+  let selectedOptions = selectElement.selectedOptions;
+  let destinationSelect = document.querySelector(".box3 select");
+  
+  for (let i = 0; i < selectedOptions.length; i++) {
+    let selectedOption = selectedOptions[i];
+    let selectedValue = selectedOption.value;
+    
+    // Create a new option element for the destination select
+    let newOption = document.createElement("option");
+    newOption.value = selectedValue;
+    newOption.text = selectedValue;
+    
+    // Add the new option to the destination select
+    destinationSelect.appendChild(newOption);
+    
+    // Remove the selected option from the source select
+    selectElement.remove(selectElement.selectedIndex);
+  }
+}
+
+// 메뉴로 추가하기	
+function moveLeft() {
+  let sourceSelect = document.querySelector(".box3 select");
+  let selectedOptions = sourceSelect.selectedOptions;
+  let destinationSelect = document.getElementById("mySelect");
+
+  for (let i = 0; i < selectedOptions.length; i++) {
+    let selectedOption = selectedOptions[i];
+    let selectedValue = selectedOption.value;
+
+    // Create a new option element for the destination select
+    let newOption = document.createElement("option");
+    newOption.value = selectedValue;
+    newOption.text = selectedValue;
+
+    // Add the new option to the destination select
+    destinationSelect.appendChild(newOption);
+
+    // Remove the selected option from the source select
+    sourceSelect.remove(sourceSelect.selectedIndex);
+  }
+}
+
+// 메뉴 선택
+function selectMenu() {
+  let selectElement = document.getElementById("mySelect");
+  let options = selectElement.options;
+  
+  let values = [];
+  for (let i = 0; i < options.length; i++) {
+    let option = options[i];
+    values.push(option.value);
+  }
+  
+  if (values.length > 0) {
+    let randomIndex = Math.floor(Math.random() * values.length);
+    let selectedValue = values[randomIndex];
+    document.getElementById("viewResult").textContent = selectedValue;
+  }	
+}
+	
+
+</script>

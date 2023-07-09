@@ -13,16 +13,19 @@
 	6. headnavbar.ejs 사용
 	7. customerInfo.ejs 사용
 	8. summarySheet.ejs 사용
+	9. schedule.ejs 사용
 
 */
 
 /////////////////////////////////// 1. setting 시작 ///////////////////////////////////
 
-const PORT = 3000;
+const PORT = 3500;
 
 const express = require('express');
 const app = express();
 const path = require('path');
+const cron = require('node-cron'); // 스케쥴기능
+const moment = require('moment'); // 현재시간 받아오기
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -153,27 +156,47 @@ app.get('/customerInfo', async (req, res) => {
 
 // 집계표
 app.get('/summarySheet', async (req, res) => {
+	var today = new Date().toISOString().slice(0, 10);
+	// 한달 전 날짜 계산
+	var oneMonthAgo = new Date();
+	oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+	var oneMonthAgoStr = oneMonthAgo.toISOString().slice(0, 10);
+
 	let rows = await asyncQuery(`
 								SELECT id, 
 									   date, 
 									   money 
 								FROM YSY.ledger 
+								WHERE date BETWEEN '${oneMonthAgoStr}' AND '${today}'
 								ORDER BY date
 								`);
 	let monthly_total = await asyncQuery(`
 										SELECT MONTH(date) AS month, 
 											   SUM(money) AS total
 										FROM YSY.ledger
+										WHERE date BETWEEN '${oneMonthAgoStr}' AND '${today}'
 										GROUP BY month
 										ORDER BY MIN(date)
 	`);
 	
 	if (!req.session.user || req.session.user === undefined) {
-        res.render('summarySheet', { rows: rows, monthly_total: monthly_total});
+        res.render('summarySheet', { rows: rows, monthly_total: monthly_total, today : today, oneMonthAgoStr : oneMonthAgoStr});
     } else {
         sessionID = req.session.user.id;
-        res.render('summarySheet', { rows: rows, monthly_total: monthly_total, sessionID: sessionID});
+        res.render('summarySheet', { rows: rows, monthly_total: monthly_total, sessionID: sessionID, today : today, oneMonthAgoStr : oneMonthAgoStr});
     }
+});
+
+// 메뉴
+app.get('/lunchMenu', async (req, res) => {
+	res.render('lunchMenu');
+
+});
+
+// 스케쥴 테스트
+app.get('/schedule', async (req, res) => {
+	res.render('schedule');
+
 });
 
 /////////////////////////////////// 3. 페이지 렌더링 종료 ///////////////////////////////////
@@ -457,24 +480,45 @@ app.post('/customer_delete', async (req, res) => {
 /////////////////////////////////// 8. summarySheet.ejs 사용 ///////////////////////////////////
 
 // 날짜 필터로 검색하기
-app.post('/summarySheet_search', async (req, res) => {
-	let startDate = req.body.startDate;
-	let endDate = req.body.endDate;
-
-	let rows = await asyncQuery(`SELECT *
-								 FROM YSY.ledger
-								 WHERE date >= '${startDate}'
-								 	and date <= '${endDate}'
+app.post('/viewBtnSearch', async (req, res) => {
+	let beforeDate = req.body.beforeDate;
+	let afterDate  = req.body.afterDate;
+	let rows = await asyncQuery(`SELECT * YSY.customerInfo
+								 WHERE No 
+								 IN (${check_No.map(value => `'${value}'`).join(',')})
 								`);
-	
-	if (rows.affectedRows != 0 && rows.errno == undefined) {
-	  res.send('ok');
-	  console.log(startDate + "에서 " + endDate + "까지 날짜 검색 완료");
-	} else {
-	  res.send('fail');
-	  console.log("날짜 검색 실패");
-	}
+
 });
 
 /////////////////////////////////// 8. summarySheet.ejs 사용 종료 ///////////////////////////////////
 
+
+/////////////////////////////////// 9. schedule.ejs 사용 ///////////////////////////////////
+
+// var currentTime = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
+// console.log(currentTime);
+
+// console.log('한국시간 :', new Date().toString());
+
+// 월요일~금요일 오후3시마다 실행
+// cron.schedule('0 15 * * 1-5', function() {
+// 	console.log('월요일~금요일 오후3시마다 실행');
+// });
+
+
+// 스케쥴 예약
+cron.schedule('20 14 * * *', async function() {
+  let loginLog = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
+
+  try {
+    let rows = await asyncQuery(`
+      INSERT INTO YSY.cronTest (loginLog)
+      VALUES ('${loginLog}')
+    `);
+    console.log('Query executed successfully');
+  } catch (error) {
+    console.error('Error executing query:', error);
+  }
+});
+
+/////////////////////////////////// 9. schedule.ejs 사용 종료 ///////////////////////////////////
