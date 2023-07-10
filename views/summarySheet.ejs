@@ -268,49 +268,83 @@
 	</body>
 	
 	<script>
-
-// 날짜로 검색한 내용 출력
-function printValue(beforeDate, afterDate) {
-	$('#summarySheet tbody').empty();
-	$('#summarySheet tbody').append("<table id='summarySheet tbody'></table>");
-	$.ajax({
-		url: "viewBtnSearch",
-		type: "POST",
-		data: {
-				beforeDate : beforeDate,
-				afterDate  : afterDate
-			  },
-		dataType: "json",
-		success: function(result) {
+function number_format(inputNumber) {
+  return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}		
 		
-			$('#dataTable').DataTable({	
-				data: result,
-				columns: [
-							{ title : 'No', data : null},
-							{ title : 'ID', data : 'id'},
-							{ title : 'IP', data : 'ip'},
-							{ title : '구분', data : 'inoutTxt'},
-							{ title : '시간', data : 'updatetime'}
-						 ],
-				columnDefs: [{
-								targets: 0, // 첫번째 자리에 No 숫자 갯수만큼 카운트
-								render: function(data, type, row, meta) {
-									return meta.row + 1;
-								}
-							},
-							{
-								targets: '_all',
-								className: "text-center"
-                        	}]
-			})
-		}, 
-		error: function(request, status, error) {
-        	console.error(error);
-        }
-	})
+// 날짜로 검색한 내용 출력
+function printValue(result) {
+  $('#summarySheet tbody').empty();
 
-	
-};
+  let monthlyTotals = {};
+  let totalSum = 0;
+  let counter = 1;
+  let currentMonth = '';
+
+  result.forEach(function(row) {
+    let formattedDate = new Date(row.date).toLocaleDateString();
+    let formattedAmount = number_format(row.money);
+
+    let rowMonth = formattedDate.split('/')[1];
+    let rowMonthName = formattedDate.split('/')[0];
+
+    if (!monthlyTotals[rowMonth]) {
+      monthlyTotals[rowMonth] = {
+        monthName: rowMonthName,
+        total: 0
+      };
+    }
+
+    monthlyTotals[rowMonth].total += row.money;
+    totalSum += row.money;
+
+    let newRow = `<tr>
+      <td>${counter}</td>
+      <td>${formattedDate}</td>
+      <td class="align_right">${formattedAmount}</td>
+    </tr>`;
+    $('#summarySheet tbody').append(newRow);
+
+    if (rowMonth !== currentMonth) {
+      if (currentMonth !== '') {
+        let monthlyTotalFormatted = number_format(monthlyTotals[currentMonth].total);
+        let monthlyTotalRow = `<tr class="row_sum">
+          <td></td>
+          <td>${monthlyTotals[currentMonth].monthName} total</td>
+          <td class="align_right">${monthlyTotalFormatted}</td>
+        </tr>`;
+        $('#summarySheet tbody').append(monthlyTotalRow);
+      }
+      currentMonth = rowMonth;
+    }
+
+    counter++;
+  });
+
+  // Display the last monthly total
+  if (currentMonth !== '') {
+    let monthlyTotalFormatted = number_format(monthlyTotals[currentMonth].total);
+    let monthlyTotalRow = `<tr class="row_sum">
+      <td></td>
+      <td>${monthlyTotals[currentMonth].monthName} total</td>
+      <td class="align_right">${monthlyTotalFormatted}</td>
+    </tr>`;
+    $('#summarySheet tbody').append(monthlyTotalRow);
+  }
+
+  // Display the grand total
+  let grandTotalFormatted = number_format(totalSum);
+  let grandTotalRow = `<tr class="row_total_sum">
+    <td></td>
+    <td>Grand Total</td>
+    <td class="align_right">${grandTotalFormatted}</td>
+  </tr>`;
+  $('#summarySheet tbody').append(grandTotalRow);
+}
+
+
+
+
 
 // 조회 버튼 클릭 이벤트	
 function btnSearch() {
@@ -326,12 +360,24 @@ function btnSearch() {
 		submit_args += commonFunc.makeArgs("beforeDate", beforeDate);
 		submit_args += commonFunc.makeArgs("afterDate", afterDate);
 		const result = commonFunc.postArgs("/viewBtnSearch", submit_args);
-		if (result === 'ok'){
 		
-		} else {
-		
-		}		
-
+		$.ajax({
+			url: "viewBtnSearch",
+			type: "POST",
+			data: {
+				beforeDate: beforeDate,
+				afterDate: afterDate
+			},
+			dataType: "json",
+			success: function(result) {
+				printValue(result); // Call the printValue function with the result
+			},
+			error: function(request, status, error) {
+				console.error(error);
+				alert('Search failed.'); // Show an error message if the AJAX request fails
+			}
+		});
+			
 	}
 }			
 		

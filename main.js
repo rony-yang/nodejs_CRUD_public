@@ -483,11 +483,14 @@ app.post('/customer_delete', async (req, res) => {
 app.post('/viewBtnSearch', async (req, res) => {
 	let beforeDate = req.body.beforeDate;
 	let afterDate  = req.body.afterDate;
-	let rows = await asyncQuery(`SELECT * YSY.customerInfo
-								 WHERE No 
-								 IN (${check_No.map(value => `'${value}'`).join(',')})
+	let rows = await asyncQuery(`SELECT id, 
+									    date, 
+									    money 
+								 FROM YSY.ledger
+								 WHERE date BETWEEN '${beforeDate}' AND '${afterDate}'
+								 ORDER BY date
 								`);
-
+	res.json(rows);
 });
 
 /////////////////////////////////// 8. summarySheet.ejs 사용 종료 ///////////////////////////////////
@@ -507,18 +510,18 @@ app.post('/viewBtnSearch', async (req, res) => {
 
 
 // 스케쥴 예약
-cron.schedule('20 14 * * *', async function() {
-  let loginLog = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
+// cron.schedule('20 14 * * *', async function() {
+//   let loginLog = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
 
-  try {
-    let rows = await asyncQuery(`
-      INSERT INTO YSY.cronTest (loginLog)
-      VALUES ('${loginLog}')
-    `);
-    console.log('Query executed successfully');
-  } catch (error) {
-    console.error('Error executing query:', error);
-  }
-});
+//   try {
+//     let rows = await asyncQuery(`
+//       INSERT INTO YSY.cronTest (loginLog)
+//       VALUES ('${loginLog}')
+//     `);
+//     console.log('Query executed successfully');
+//   } catch (error) {
+//     console.error('Error executing query:', error);
+//   }
+// });
 
 /////////////////////////////////// 9. schedule.ejs 사용 종료 ///////////////////////////////////
