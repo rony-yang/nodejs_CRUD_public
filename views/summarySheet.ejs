@@ -197,6 +197,7 @@
 									<!-- 내용 -->
 									<tbody>
 										<%
+										// 숫자에 , 찍어주기
 										function number_format(inputNumber) {
 											return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 										}
@@ -268,82 +269,87 @@
 	</body>
 	
 	<script>
+// 숫자에 , 찍어주기		
 function number_format(inputNumber) {
   return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }		
 		
 // 날짜로 검색한 내용 출력
 function printValue(result) {
-  $('#summarySheet tbody').empty();
+	$('#summarySheet tbody').empty(); // 기존 데이터 비워주기
 
-  let monthlyTotals = {};
-  let totalSum = 0;
-  let counter = 1;
-  let currentMonth = '';
+	let monthlyTotals = {}; // 날짜를 키로 사용하는 각 월의 총계
+	let totalSum = 0; // 개별 금액
+	let counter = 1; // 일련번호
+	let currentMonth = ''; // 현재 월
 
-  result.forEach(function(row) {
-    let formattedDate = new Date(row.date).toLocaleDateString();
-    let formattedAmount = number_format(row.money);
+	result.forEach(function(row, index) {
+		let formattedDate = new Date(row.date).toLocaleDateString(); // 날짜 형식 변경
+		let formattedAmount = number_format(row.money); // 금액에 , 찍어주기
 
-    let rowMonth = formattedDate.split('/')[1];
-    let rowMonthName = formattedDate.split('/')[0];
+		let rowMonth = formattedDate.split('.')[1]; // 날짜에서 월만 추출
+		let rowMonthName = formattedDate.split('.')[0]; // 월 이름 추출
 
-    if (!monthlyTotals[rowMonth]) {
-      monthlyTotals[rowMonth] = {
-        monthName: rowMonthName,
-        total: 0
-      };
-    }
+		// 새로운 월이 시작될 때 합계 행 표시
+		if (rowMonth !== currentMonth) {
+			// 새로운 월이 시작될 경우
+			if (currentMonth !== '') {
+				// monthlyTotals에서 이전 달의 합계를 검색하고 monthlyTotalRow에 합계 표시
+				if (monthlyTotals[currentMonth]) {
+					let monthlyTotalFormatted = number_format(monthlyTotals[currentMonth].total);
+					let monthlyTotalRow = `<tr class="row_sum">
+						<td></td>
+						<td>${monthlyTotals[currentMonth].monthName}월 합계</td>
+						<td class="align_right">${monthlyTotalFormatted}</td>
+						</tr>`;
+					$('#summarySheet tbody').append(monthlyTotalRow);
+				}
+			}
+			// 현재 월이 새로운 월로 업데이트됨
+			currentMonth = rowMonth;
+		}
 
-    monthlyTotals[rowMonth].total += row.money;
-    totalSum += row.money;
+		// 날짜가 총계 배열에 있는지 확인 : 특정 월의 첫번째 항목인 경우 total을 0으로 초기화
+		if (!monthlyTotals[rowMonth]) {
+			monthlyTotals[rowMonth] = {
+				monthName: rowMonth,
+				total: 0
+			};
+		}
 
-    let newRow = `<tr>
-      <td>${counter}</td>
-      <td>${formattedDate}</td>
-      <td class="align_right">${formattedAmount}</td>
-    </tr>`;
-    $('#summarySheet tbody').append(newRow);
+		monthlyTotals[rowMonth].total += row.money;
+		totalSum += row.money;
 
-    if (rowMonth !== currentMonth) {
-      if (currentMonth !== '') {
-        let monthlyTotalFormatted = number_format(monthlyTotals[currentMonth].total);
-        let monthlyTotalRow = `<tr class="row_sum">
-          <td></td>
-          <td>${monthlyTotals[currentMonth].monthName} total</td>
-          <td class="align_right">${monthlyTotalFormatted}</td>
-        </tr>`;
-        $('#summarySheet tbody').append(monthlyTotalRow);
-      }
-      currentMonth = rowMonth;
-    }
+		let newRow = `<tr>
+			<td>${counter}</td>
+			<td>${formattedDate}</td>
+			<td class="align_right">${formattedAmount}</td>
+			</tr>`;
+		$('#summarySheet tbody').append(newRow);
 
-    counter++;
-  });
+		// 일련번호 하나씩 늘려주기
+		counter++;
+	});
 
-  // Display the last monthly total
-  if (currentMonth !== '') {
-    let monthlyTotalFormatted = number_format(monthlyTotals[currentMonth].total);
-    let monthlyTotalRow = `<tr class="row_sum">
-      <td></td>
-      <td>${monthlyTotals[currentMonth].monthName} total</td>
-      <td class="align_right">${monthlyTotalFormatted}</td>
-    </tr>`;
-    $('#summarySheet tbody').append(monthlyTotalRow);
-  }
+	if (currentMonth !== '') {
+		let monthlyTotalFormatted = number_format(monthlyTotals[currentMonth].total);
+		let monthlyTotalRow = `<tr class="row_sum">
+			<td></td>
+			<td>${monthlyTotals[currentMonth].monthName}월 합계</td>
+			<td class="align_right">${monthlyTotalFormatted}</td>
+			</tr>`;
+		$('#summarySheet tbody').append(monthlyTotalRow);
+	}
 
-  // Display the grand total
-  let grandTotalFormatted = number_format(totalSum);
-  let grandTotalRow = `<tr class="row_total_sum">
-    <td></td>
-    <td>Grand Total</td>
-    <td class="align_right">${grandTotalFormatted}</td>
-  </tr>`;
-  $('#summarySheet tbody').append(grandTotalRow);
-}
-
-
-
+	// 전체 합계 추가하기
+	let grandTotalFormatted = number_format(totalSum);
+	let grandTotalRow = `<tr class="row_total_sum">
+		<td></td>
+		<td>전체 합계</td>
+		<td class="align_right">${grandTotalFormatted}</td>
+		</tr>`;
+	$('#summarySheet tbody').append(grandTotalRow);
+} //--printValue
 
 
 // 조회 버튼 클릭 이벤트	
@@ -370,19 +376,16 @@ function btnSearch() {
 			},
 			dataType: "json",
 			success: function(result) {
-				printValue(result); // Call the printValue function with the result
+				printValue(result);
 			},
 			error: function(request, status, error) {
 				console.error(error);
-				alert('Search failed.'); // Show an error message if the AJAX request fails
+				alert('검색에 실패하였습니다.'); 
 			}
 		});
 			
 	}
 }			
-		
-		
-		
-		
+
 	</script>
 </html>
