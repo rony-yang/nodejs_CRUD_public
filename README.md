@@ -14,11 +14,15 @@ nodeJS 개인 프로젝트
 
 **5. 사용 기술**
 
-- 언어 : HTML, CSS(bootstrap), JavaScript(nodeJS), ajax
-
-- 프로그램 : groomIDE
-
-- DB : mysql
+- 언어 : node.js, javaScript
+  
+- 웹 개발 : HTML, CSS(bootstrap), ajax
+  
+- 서버 : express
+  
+- DB : MySQL
+  
+- IDE : vs code, DBeaver, Github
 
 **6. 주요기능**
 
